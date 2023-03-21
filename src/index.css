@@ -41,6 +41,10 @@ code {
   text-decoration: line-through;
 }
 
+.is-bingo {
+  border: 0.5rem solid #5dbb63;
+}
+
 .center {
   padding: 0;
   font-size: 1.5rem;

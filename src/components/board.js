@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+// imports
+import React, { useState } from "react";
 import { useReward } from "react-rewards";
 import Tile from "./tile";
 import { data } from "./data";
 
 const Board = () => {
+  // all possible winning positions
   const winningPositions = [
     [0, 1, 2, 3, 4],
     [5, 6, 7, 8, 9],
@@ -21,52 +23,75 @@ const Board = () => {
 
   const [bingoCount, setBingoCount] = useState(0);
   const [selectedTiles, setSelectedTiles] = useState([]);
-  const { reward: balloonsReward, isAnimating: isBalloonsAnimating } =
-    useReward("balloonsReward", "balloons");
+  const { reward: balloonsReward } = useReward("balloonsReward", "balloons");
 
   const shuffle = (arr) => {
     return arr.sort(() => Math.random() - 0.5);
   };
 
+  // Function that shuffles and generates unique data for board
   const generateData = () => {
-    const tempArray = JSON.parse(JSON.stringify(shuffle(data)));
-    tempArray.splice(12, 0, { phrase: "Conf call Bingo", isChecked: true });
+    const tempArray = shuffle([...data]);
+    tempArray.splice(12, 0, {
+      phrase: "Conf call Bingo",
+      isChecked: true,
+      isBingo: true,
+    });
     return tempArray;
   };
 
   const [phrases, setPhrases] = useState(() => generateData());
 
-  useEffect(() => {
+  // Check and count number of bingo
+  const checkBingo = () => {
     let tempBingoCount = 0;
-    for (let i = 0; i < winningPositions.length; i++) {
-      let result = winningPositions[i].every((val) =>
+
+    phrases.forEach((element) => {
+      element.isBingo = false;
+    });
+
+    winningPositions.forEach(element => {
+      const result = element.every((val) =>
         selectedTiles.includes(val)
       );
-      if (result) tempBingoCount++;
-    }
+      if (result) {
+        tempBingoCount++;
+        element.forEach((element) => {
+          phrases[element].isBingo = true;
+        });
+      }
+    });
+
     if (tempBingoCount > bingoCount) balloonsReward();
-
     setBingoCount(tempBingoCount);
-  }, [phrases]);
+  };
 
+  // This function is called when a tile is clicked, it also marks the tile selected
   const selectItem = (position) => {
     if (position === 12) return;
 
     const index = selectedTiles.indexOf(position);
-    if (index > -1) {
-      selectedTiles.splice(index, 1);
-    } else selectedTiles.push(position);
 
-    const tempArray = JSON.parse(JSON.stringify(phrases));
+    if (index > -1) selectedTiles.splice(index, 1);
+    else selectedTiles.push(position);
+
+    const tempArray = [...phrases];
     tempArray[position].isChecked = !tempArray[position].isChecked;
     setPhrases(tempArray);
+    checkBingo();
   };
 
+  // board rendering
   return (
     <>
       <div className="board">
         {phrases.map((item, index) => (
-          <Tile item={item} position={index} modify={selectItem} />
+          <Tile
+            item={item}
+            position={index}
+            modify={selectItem}
+            key={`tile ${index}`}
+          />
         ))}
       </div>
       <h2 className="bingo-count">Bingo Count: {bingoCount}</h2>

@@ -2,16 +2,21 @@ import React from "react";
 
 const Tile = (props) => {
   const { item, position, modify } = props;
-  const checked = item.isChecked && position != 12 ? "is-checked" : "";
-  const center = position == 12 ? "center" : "";
+
+  // classes for CSS
+  const checked = item.isChecked && position !== 12 ? "is-checked" : "";
+  const isBingo = item.isBingo || position === 12 ? "is-bingo" : "";
+  const center = position === 12 ? "center" : "";
+
+  // Tile rendering
   return (
     <div
-      id={position == 12 ? "balloonsReward" : position}
+      id={position === 12 ? "balloonsReward" : position}
       onClick={() => modify(position)}
-      className={`tile ${checked} ${center}`}
+      className={`tile ${checked} ${center} ${isBingo}`}
     >
       {JSON.stringify(item.phrase)}
-      {position == 12 && <p>&#128512;</p>}
+      {position === 12 && <p>&#128512;</p>}
     </div>
   );
 };
