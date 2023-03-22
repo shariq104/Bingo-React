@@ -13,26 +13,27 @@ code {
     monospace;
 }
 
-.title {
+.page .title {
   font-size: 4rem;
   margin: 1rem 0;
   text-align: center;
   color: white;
 }
 
-.board {
+.bingo-board {
   display: grid;
-  grid-template-columns: repeat(5, 8rem);
+  grid-template-columns: repeat(5, minmax(min-content, 8rem));
   grid-template-rows: repeat(5, 8rem);
   grid-gap: 0.2rem;
   margin: 0 auto;
   width: max-content;
 }
 
-.is-checked,
-.tile {
+.item-tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  padding: 0.5rem;
   border: 0.1rem solid grey;
   background: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%);
 }
@@ -45,16 +46,31 @@ code {
   border: 0.5rem solid #5dbb63;
 }
 
-.center {
-  padding: 0;
+.center-tile {
+  display: block;
+  justify-content: center;
+  align-items: center;
   font-size: 1.5rem;
   font-weight: 600;
 }
 
-.center p {
+.center-tile p {
   margin: 0 auto;
 }
 
 .bingo-count {
   text-align: center;
+}
+
+@media screen and (max-width: 700px) {
+  .is-checked,
+  .item-tile,
+  .center-tile {
+    font-size: 10px;
+  }
+
+  .bingo-board {
+    grid-template-columns: repeat(5, minmax(min-content, 70px));
+    grid-template-rows: repeat(5, 70px);
+  }
 }

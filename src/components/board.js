@@ -84,7 +84,7 @@ const Board = () => {
   // board rendering
   return (
     <>
-      <div className="board">
+      <div className="bingo-board">
         {phrases.map((item, index) => (
           <Tile
             item={item}
